@@ -1,25 +1,34 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import ky from 'ky';
 
-class App extends Component {
+class App extends React.Component {
+  state = {
+    loadingText: 'Loading',
+    movies: [],
+  };
+
+  async componentDidMount() {
+    const movies = await ky.get('http://www.omdbapi.com/?apikey=5599d96d&s=Guardians').json();
+
+
+  }
+
   render() {
+    const movies = this.state.movies;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <h1>MovieDB 2</h1>
+        {this.state.loadingText === 'Done' ? (
+          <div>
+            <p>{movies.length}</p>
+            {movies.map(movie => {
+              return <p>{movie.Title}</p>;
+            })}
+          </div>
+        ) : (
+          <p>{this.state.loadingText}</p>
+        )}
       </div>
     );
   }
